@@ -1,4 +1,4 @@
-import 'package:eunoia/views/userLogin/login.dart';
+import 'package:eunoia/views/user/userLogin/login.dart';
 import 'package:flutter/material.dart';
 
 void main() {

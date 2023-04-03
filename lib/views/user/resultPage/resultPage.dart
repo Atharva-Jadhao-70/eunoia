@@ -1,4 +1,5 @@
-import 'package:eunoia/views/dashBoard/navigationPage.dart';
+
+import 'package:eunoia/views/user/dashBoard/navigationPage.dart';
 import 'package:flutter/material.dart';
 
 class ResultPage extends StatefulWidget{

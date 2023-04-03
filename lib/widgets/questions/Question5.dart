@@ -1,5 +1,5 @@
 
-import 'package:eunoia/views/resultPage/resultPage.dart';
+import 'package:eunoia/views/user/resultPage/resultPage.dart';
 import 'package:flutter/material.dart';
 
 class Question5 extends StatefulWidget{

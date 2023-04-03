@@ -1,4 +1,4 @@
-import 'package:eunoia/views/profilePage/profilePage.dart';
+import 'package:eunoia/views/user/profilePage/profilePage.dart';
 import 'package:eunoia/utils/movieRecommandation.dart';
 import 'package:flutter/material.dart';
 
