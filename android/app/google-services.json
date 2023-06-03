@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "154436978039",
+    "project_id": "eunoia-31a4f",
+    "storage_bucket": "eunoia-31a4f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154436978039:android:2b37e55311c5b4eb124d72",
+        "android_client_info": {
+          "package_name": "com.example.eunoia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "154436978039-8hm4fjkf6km06a9oejekp95ja8oefvfu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9Q3o5XCImwmEPmISK7GJ0BwP0BOK79Pw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "154436978039-8hm4fjkf6km06a9oejekp95ja8oefvfu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

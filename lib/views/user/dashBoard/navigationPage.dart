@@ -1,6 +1,6 @@
-import 'package:eunoia/widgets/questions/Question.dart';
 import 'package:flutter/material.dart';
 
+import '../startTest/startTestScreen.dart';
 import 'dashBoard.dart';
 
 class NavigationPage extends StatefulWidget {
@@ -16,7 +16,7 @@ class NavigationPageState extends State<NavigationPage> {
   final List<Widget> _children = [
     // Add your screens here
     DashboardScreen(),
-    Question(),
+    StartTestScreen(),
     Container(),
   ];
 

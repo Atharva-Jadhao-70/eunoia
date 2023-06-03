@@ -1,4 +1,5 @@
-import 'package:eunoia/widgets/questions/Question.dart';
+import 'package:eunoia/views/user/welcomPage/welcomePage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class signUpPage extends StatefulWidget {
@@ -17,7 +18,10 @@ class signUpPageState extends State<signUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('Eunoia',)),
+        title: const Center(
+            child: Text(
+          'Eunoia',
+        )),
       ),
       body: Container(
         color: Colors.blue.shade50,
@@ -29,10 +33,13 @@ class signUpPageState extends State<signUpPage> {
               height: 150,
               child: Image.asset('assets/images/logo.png'),
             ),
-
-            const Text('SIGN UP', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
-            const SizedBox(height: 20,),
-
+            const Text(
+              'SIGN UP',
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             Center(
               child: Container(
                 width: 250,
@@ -145,7 +152,15 @@ class signUpPageState extends State<signUpPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Question()));
+                FirebaseAuth.instance
+                    .createUserWithEmailAndPassword(
+                        email: email.text, password: passWord.text)
+                    .then((value) {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => WelcomePage()));
+                }).onError((error, stackTrace){
+                  print('Error ${error.toString()}');
+                });
               },
               child: const Text('Sign Up'),
             ),

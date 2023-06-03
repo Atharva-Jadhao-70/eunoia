@@ -49,8 +49,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: [
             Text('Dashboard'),
             GestureDetector(
-              onTap: (){
-                Navigator.push(context,MaterialPageRoute(builder: (context)=>ProfilePage()));
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()));
               },
               child: CircleAvatar(
                 child: Icon(Icons.person),
@@ -64,12 +65,99 @@ class _DashboardScreenState extends State<DashboardScreen> {
         children: [
           //Container for header result
           Container(
-              child: const Card(
-            child: ListTile(
-              title: Text('Mental Health Diagnosis:'),
-              subtitle: Text('Type: Major Depression, Level: Severe'),
+              child: Card(
+                margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                elevation: 5,
+                  child: Row(children: [
+            Expanded(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CircleAvatar(
+                      radius: MediaQuery.of(context).size.width * 0.1,
+                      backgroundColor: Colors.grey.shade100,
+                      child: Icon(
+                        Icons.person,
+                        color: Colors.black,
+                        size: MediaQuery.of(context).size.width * 0.1,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: const Text('FirstName LastName'),
+                  )
+                ],
+              ),
             ),
-          )),
+            Expanded(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Depression Level',
+                          style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.045,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'Moderate',
+                          style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.04),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Anxiety Level',
+                          style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.045,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'Severe',
+                          style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.04),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Stress Level',
+                          style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.045,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'Mild',
+                          style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.04),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ]))),
 
           const SizedBox(height: 16),
 
@@ -78,10 +166,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Container(
             child: loadingData
                 ? const Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 4.0,
-                  ),
-                )
+                    child: CircularProgressIndicator(
+                      strokeWidth: 4.0,
+                    ),
+                  )
                 : SingleChildScrollView(
                     child: Row(children: [
                       //card - 1
