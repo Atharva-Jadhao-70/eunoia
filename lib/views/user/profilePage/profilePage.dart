@@ -1,3 +1,4 @@
+import 'package:eunoia/views/user/dashBoard/dashBoard.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -5,170 +6,255 @@ class ProfilePage extends StatefulWidget {
   State<StatefulWidget> createState() => ProfilePageState();
 }
 
-
 class ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: Text('Profile Page'),
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
-              // Logout functionality
+              // Handle logout functionality
             },
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              height: 150,
-              color: Colors.grey.shade200,
-              child: Stack(
-                children: [
-                  Center(
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: AssetImage('assets/images/default_profile_photo.jpg'),
+      body: ListView(
+        padding: EdgeInsets.all(16.0),
+        children: [
+          Center(
+            child: Stack(
+              children: [
+                Container(
+                  width: 120.0,
+                  height: 120.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: AssetImage(
+                          'assets/images/default_profile_photo.jpg'), // Replace with your own image
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  Positioned(
-                    bottom: 8,
-                    right: 8,
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.blue,
+                    radius: 20.0,
                     child: IconButton(
                       icon: Icon(Icons.edit),
+                      color: Colors.white,
                       onPressed: () {
-                        // Edit profile photo functionality
+                        // Handle edit profile photo functionality
                       },
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Name',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 4),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.grey.shade200,
+          ),
+
+          SizedBox(height: 16.0),
+
+          //name
+          Container(
+            child: Column(
+              children: [
+                const Text(
+                  'Name',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Card(
+                  elevation: 5,
+                  color: Colors.grey.shade300,
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Text(
+                      '${DashboardScreenState.userFullName}',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: MediaQuery.of(context).size.width * 0.045),
                     ),
-                    padding: EdgeInsets.all(8),
-                    child: Text('John Doe'),
                   ),
-                  SizedBox(height: 12),
-                  Text(
-                    'Email',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 4),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.grey.shade200,
+                ),
+              ],
+            ),
+          ),
+
+          SizedBox(height: 10.0),
+
+          //email
+          Container(
+            child: Column(
+              children: [
+                const Text(
+                  'Email',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Card(
+                  elevation: 5,
+                  color: Colors.grey.shade300,
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Text(
+                      '${DashboardScreenState.userEmail}',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: MediaQuery.of(context).size.width * 0.045),
                     ),
-                    padding: EdgeInsets.all(8),
-                    child: Text('johndoe@example.com'),
                   ),
-                  SizedBox(height: 12),
-                  Text(
-                    'Phone Number',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 4),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.grey.shade200,
+                ),
+              ],
+            ),
+          ),
+
+          SizedBox(height: 10.0),
+
+          //phone number
+          Container(
+            child: Column(
+              children: [
+                const Text(
+                  'Phone number',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Card(
+                  elevation: 5,
+                  color: Colors.grey.shade300,
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Text(
+                      '9786562672',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: MediaQuery.of(context).size.width * 0.045),
                     ),
-                    padding: EdgeInsets.all(8),
-                    child: Text('+1 123 456 7890'),
                   ),
-                  SizedBox(height: 12),
-                  Text(
-                    'Date of Birth',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 4),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.grey.shade200,
+                ),
+              ],
+            ),
+          ),
+
+          SizedBox(height: 10.0),
+
+          //Date of birth
+          Container(
+            child: Column(
+              children: [
+                const Text(
+                  'Date of birth',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Card(
+                  elevation: 5,
+                  color: Colors.grey.shade300,
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Text(
+                      '29 Feb 2001',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: MediaQuery.of(context).size.width * 0.045),
                     ),
-                    padding: EdgeInsets.all(8),
-                    child: Text('January 1, 1990'),
                   ),
-                  SizedBox(height: 24),
-                  Container(
-                    height: 2,
-                    color: Colors.grey.shade300,
-                  ),
-                  SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            'Depression Level',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            'High',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
-                      VerticalDivider(),
-                      Column(
+                ),
+              ],
+            ),
+          ),
+
+          SizedBox(height: 16.0),
+
+          //depression level
+          Card(
+            child: Container(
+              width: 100,
+              height: 100,
+              child: Center(
+                  child: Padding(
+                padding: EdgeInsets.all(3.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Depression Level',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.05),
+                    ),
+                    SizedBox(height: 6.0),
+                    Text(
+                      '${DashboardScreenState.userDepressionLevel}',
+                      style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.045),
+                    ),
+                  ],
+                ),
+              )),
+            ),
+          ),
+
+          Row(
+            children: [
+              //anxiety level
+              Expanded(
+                child: Card(
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    child: Center(
+                        child: Padding(
+                      padding: EdgeInsets.all(3.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             'Anxiety Level',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.05),
                           ),
-                          SizedBox(height: 4),
+                          SizedBox(height: 6.0),
                           Text(
-                            'Medium',
-                            style: TextStyle(fontSize: 16),
+                            '${DashboardScreenState.userAnxietyLevel}',
+                            style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.045),
                           ),
                         ],
                       ),
-                      VerticalDivider(),
-                      Column(
+                    )),
+                  ),
+                ),
+              ),
+
+              //stress level
+              Expanded(
+                child: Card(
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    child: Center(
+                        child: Padding(
+                      padding: EdgeInsets.all(3.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             'Stress Level',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.05),
                           ),
-                          SizedBox(height: 4),
+                          SizedBox(height: 6.0),
                           Text(
-                            'Low',
-                            style: TextStyle(fontSize: 16),
+                            '${DashboardScreenState.userStressLevel}',
+                            style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.045),
                           ),
                         ],
                       ),
-                    ],
+                    )),
                   ),
-                ],
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          )
+        ],
       ),
     );
   }
 }
-

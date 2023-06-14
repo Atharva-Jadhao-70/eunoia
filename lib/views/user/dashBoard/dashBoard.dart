@@ -1,22 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eunoia/views/user/musicRecommandation/musicRecommandation.dart';
 import 'package:eunoia/views/user/profilePage/profilePage.dart';
 import 'package:eunoia/utils/movieRecommandation.dart';
 import 'package:flutter/material.dart';
 import 'package:eunoia/views/user/userLogin/login.dart';
 
+import '../../../utils/trackModel.dart';
+
 class DashboardScreen extends StatefulWidget {
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
+  State<DashboardScreen> createState() => DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class DashboardScreenState extends State<DashboardScreen> {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   var recommendedMovies = [];
-  var recommendedMusic = [];
 
   static String? userFullName;
   static String? userEmail;
+  static String? userPhonerNumber = '9988756237';
+  static String? userDOB = '28 Feb 2023';
   static String? userDepressionLevel;
   static String? userAnxietyLevel;
   static String? userStressLevel;
@@ -66,6 +70,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     fetchUserData();
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,13 +79,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Dashboard'),
+            const Text('Dashboard'),
             GestureDetector(
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => ProfilePage()));
               },
-              child: CircleAvatar(
+              child: const CircleAvatar(
                 child: Icon(Icons.person),
               ),
             )
@@ -194,8 +200,83 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
           const SizedBox(height: 16),
 
+          //container for music recommandation
+          const Padding(
+            padding: EdgeInsets.all(5),
+            child: Text(
+              'Music Recommandation',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          Container(
+              // height: 200,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Card(
+                      child: InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => MusicRecommandation(query: 'depression')));
+                        },
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          margin: const EdgeInsets.all(8),
+                          child: const Center(child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('Music for depression', style: TextStyle(fontWeight: FontWeight.bold),),
+                          )),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Card(
+                      child: InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => MusicRecommandation(query: 'anxiety')));
+                        },
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          margin: const EdgeInsets.all(8),
+                          child: const Center(child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('Music for anxiety',style: TextStyle(fontWeight: FontWeight.bold),),
+                          )),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Card(
+                      child: InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => MusicRecommandation(query: 'stress')));
+                        },
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          margin: const EdgeInsets.all(8),
+                          child: const Center(child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('Music for stress', style: TextStyle(fontWeight: FontWeight.bold),),
+                          )),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )),
+
           //container for movie recommandation
-          const Text('Recommanded movies'),
+          const Padding(
+            padding: EdgeInsets.all(5),
+            child: Text(
+              'Movies Recommandation',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
           Container(
             child: loadingData
                 ? const Center(

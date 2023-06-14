@@ -14,6 +14,8 @@ class signUpPageState extends State<signUpPage> {
 
   var name = TextEditingController();
   var email = TextEditingController();
+  var phone = TextEditingController();
+  DateTime? selectedDate;
   var passWord = TextEditingController();
 
   bool passwordVisiblity = true;
@@ -33,6 +35,8 @@ class signUpPageState extends State<signUpPage> {
       await firestore.collection('users').doc(userId).set({
         'userName': name.text,
         'userEmail': email.text,
+        'userPhoneNumber': phone.text,
+        'userDateOfBirth': selectedDate,
         'userTestAttempts': 0,
         'depression_level': null,
         'anxiety_level': null,
@@ -87,6 +91,21 @@ class signUpPageState extends State<signUpPage> {
     }
   }
 
+  Future<void> selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (pickedDate != null && pickedDate != selectedDate) {
+      setState(() {
+        selectedDate = pickedDate;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,6 +135,8 @@ class signUpPageState extends State<signUpPage> {
                 const SizedBox(
                   height: 20,
                 ),
+
+                //input name
                 Center(
                   child: Container(
                     width: 250,
@@ -140,9 +161,12 @@ class signUpPageState extends State<signUpPage> {
                     ),
                   ),
                 ),
+
                 const SizedBox(
                   height: 10,
                 ),
+
+                //input email
                 Center(
                   child: Container(
                     width: 250,
@@ -167,9 +191,74 @@ class signUpPageState extends State<signUpPage> {
                     ),
                   ),
                 ),
+
                 const SizedBox(
                   height: 20,
                 ),
+
+                //input phone number
+                Center(
+                  child: Container(
+                    width: 250,
+                    child: TextFormField(
+                      controller: phone,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'please input your phone number';
+                        }
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Enter your ph. no.',
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.green),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 20,
+                ),
+
+                //Date selector
+                GestureDetector(
+                  onTap: () {
+                    selectDate(context);
+                  },
+                  child: Container(
+                    width: 250,
+                    child: AbsorbPointer(
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Date of Birth',
+                        ),
+                        controller: TextEditingController(
+                          text: selectedDate != null
+                              ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
+                              : '',
+                        ),
+                        validator: (value) {
+                          if (selectedDate == null) {
+                            return 'Please select a date of birth';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 20,
+                ),
+
+                //input password
                 Center(
                   child: Container(
                     width: 250,
