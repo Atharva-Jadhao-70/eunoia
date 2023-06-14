@@ -4,7 +4,9 @@ import '../startTest/startTestScreen.dart';
 import 'dashBoard.dart';
 
 class NavigationPage extends StatefulWidget {
-  const NavigationPage({Key? key}) : super(key: key);
+  String userId;
+
+  NavigationPage({required this.userId,super.key});
 
   @override
   NavigationPageState createState() => NavigationPageState();
@@ -12,6 +14,13 @@ class NavigationPage extends StatefulWidget {
 
 class NavigationPageState extends State<NavigationPage> {
   int _currentIndex = 0;
+  String? userId;
+
+  @override
+  void initState(){
+    userId = widget.userId;
+    super.initState();
+  }
 
   final List<Widget> _children = [
     // Add your screens here
@@ -40,7 +49,7 @@ class NavigationPageState extends State<NavigationPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.quiz_outlined),
-            label: 'Take the quiz',
+            label: 'Start Test',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),

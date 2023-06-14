@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
         future: initializeFireBase(),
         builder: ((context, snapshot) {
           if(snapshot.connectionState == ConnectionState.done){
-            return loginPage();
+            return LoginPage();
           }
           else{
             return const Center(child: CircularProgressIndicator());

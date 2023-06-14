@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eunoia/views/user/profilePage/profilePage.dart';
 import 'package:eunoia/utils/movieRecommandation.dart';
 import 'package:flutter/material.dart';
+import 'package:eunoia/views/user/userLogin/login.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -8,8 +10,16 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   var recommendedMovies = [];
   var recommendedMusic = [];
+
+  static String? userFullName;
+  static String? userEmail;
+  static String? userDepressionLevel;
+  static String? userAnxietyLevel;
+  static String? userStressLevel;
 
   bool loadingData = true;
 
@@ -34,10 +44,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  Future<void> fetchUserData() async {
+    final DocumentSnapshot userSnapshot =
+        await firestore.collection('users').doc(LoginPageState.userId).get();
+
+    final userData = userSnapshot.data() as Map<String, dynamic>;
+
+    setState(() {
+      userFullName = userData['userName'];
+      userEmail = userData['userEmail'];
+      userDepressionLevel = userData['userDepressionLevel'];
+      userAnxietyLevel = userData['userAnxietyLevel'];
+      userStressLevel = userData['userStressLevel'];
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     getRecommandedMovies();
+    fetchUserData();
   }
 
   @override
@@ -66,98 +92,105 @@ class _DashboardScreenState extends State<DashboardScreen> {
           //Container for header result
           Container(
               child: Card(
-                margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-                elevation: 5,
+                  margin:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                  elevation: 5,
                   child: Row(children: [
-            Expanded(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CircleAvatar(
-                      radius: MediaQuery.of(context).size.width * 0.1,
-                      backgroundColor: Colors.grey.shade100,
-                      child: Icon(
-                        Icons.person,
-                        color: Colors.black,
-                        size: MediaQuery.of(context).size.width * 0.1,
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: CircleAvatar(
+                              radius: MediaQuery.of(context).size.width * 0.1,
+                              backgroundColor: Colors.grey.shade100,
+                              child: Icon(
+                                Icons.person,
+                                color: Colors.black,
+                                size: MediaQuery.of(context).size.width * 0.1,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(userFullName ?? '----'),
+                          )
+                        ],
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: const Text('FirstName LastName'),
-                  )
-                ],
-              ),
-            ),
-            Expanded(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Depression Level',
-                          style: TextStyle(
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.045,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          'Moderate',
-                          style: TextStyle(
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.04),
-                        )
-                      ],
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Depression Level',
+                                  style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.045,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  userDepressionLevel ?? '----',
+                                  style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.04),
+                                )
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Anxiety Level',
+                                  style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.045,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  userAnxietyLevel ?? '----',
+                                  style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.04),
+                                )
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Stress Level',
+                                  style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.045,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  userStressLevel ?? '----',
+                                  style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.04),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Anxiety Level',
-                          style: TextStyle(
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.045,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          'Severe',
-                          style: TextStyle(
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.04),
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Stress Level',
-                          style: TextStyle(
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.045,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          'Mild',
-                          style: TextStyle(
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.04),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ]))),
+                  ]))),
 
           const SizedBox(height: 16),
 

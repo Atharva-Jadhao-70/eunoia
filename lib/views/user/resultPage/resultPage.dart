@@ -15,7 +15,7 @@ class ResultPageState extends State<ResultPage>{
     Future.delayed(Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => NavigationPage()),
+        MaterialPageRoute(builder: (context) => NavigationPage(userId: '',)),
       );
     });
   }

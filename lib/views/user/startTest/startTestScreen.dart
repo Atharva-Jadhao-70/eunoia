@@ -1,4 +1,10 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eunoia/views/user/dashBoard/dashBoard.dart';
+import 'package:eunoia/views/user/userLogin/login.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import '../dashBoard/navigationPage.dart';
 
@@ -31,15 +37,37 @@ class StartTestScreenState extends State<StartTestScreen> {
     "I felt that life was meaningless"
   ];
 
-  List<String> options = [
-    'Not at all',
-    'Several Days',
-    'More than half the days',
-    'Nearly Every day'
-  ];
+  // List<String> options = [
+  //   'Not at all',
+  //   'Several Days',
+  //   'More than half the days',
+  //   'Nearly Every day'
+  // ];
 
   List<int> selectedValue = List.filled(20, 0);
   int currentIndex = 0;
+
+  String depression_level = '';
+  String anxiety_level = '';
+  String stress_level = '';
+
+  @override
+  void initState() {
+    super.initState();
+    // getPrediction();
+  }
+
+  Future<dynamic> getPrediction(String input_values) async {
+    var data = await http.get(Uri.parse(
+        'https://atharva70.pythonanywhere.com/predictAll?input_values=$input_values'));
+    // print(jsonDecode(data.body));
+    var body = jsonDecode(data.body);
+    setState(() {
+      depression_level = body['depression_level'];
+      anxiety_level = body['anxiety_level'];
+      stress_level = body['stress_level'];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +96,7 @@ class StartTestScreenState extends State<StartTestScreen> {
                       //options
                       Column(children: [
                         RadioListTile(
-                          title: Text('Not at all'),
+                          title: Text('Never'),
                           value: 0,
                           groupValue: selectedValue[index],
                           onChanged: (value) {
@@ -78,7 +106,7 @@ class StartTestScreenState extends State<StartTestScreen> {
                           },
                         ),
                         RadioListTile(
-                          title: Text('Several Days'),
+                          title: Text('Sometimes'),
                           value: 1,
                           groupValue: selectedValue[index],
                           onChanged: (value) {
@@ -88,7 +116,7 @@ class StartTestScreenState extends State<StartTestScreen> {
                           },
                         ),
                         RadioListTile(
-                          title: Text('More than half days'),
+                          title: Text('Often'),
                           value: 2,
                           groupValue: selectedValue[index],
                           onChanged: (value) {
@@ -98,7 +126,7 @@ class StartTestScreenState extends State<StartTestScreen> {
                           },
                         ),
                         RadioListTile(
-                          title: Text('Nearly Every Day'),
+                          title: Text('Almost Always'),
                           value: 3,
                           groupValue: selectedValue[index],
                           onChanged: (value) {
@@ -110,15 +138,138 @@ class StartTestScreenState extends State<StartTestScreen> {
                       ]),
                       //submit button
                       Visibility(
-                        visible: index==19,
-                        child: ElevatedButton(
-                          onPressed: (){
-                            print(selectedValue);
-                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>NavigationPage()), (route) => false);
-                          },
-                          child: const Text('Submit'),
-                        )
-                      ),
+                          visible: index == 19,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              var data =
+                                  await getPrediction(selectedValue.join(','))
+                                      .then((value) {
+                                final DocumentReference docRef =
+                                    FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(LoginPageState.userId);
+
+                                // Update the specific field
+                                docRef.update({
+                                  'userDepressionLevel': depression_level,
+                                  'userAnxietyLevel': anxiety_level,
+                                  'userStressLevel': stress_level
+                                });
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Results'),
+                                        content: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    'Depression Level',
+                                                    style: TextStyle(
+                                                        fontSize: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.045,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  Text(
+                                                    depression_level,
+                                                    style: TextStyle(
+                                                        fontSize: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.04),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    'Anxiety Level',
+                                                    style: TextStyle(
+                                                        fontSize: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.045,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  Text(
+                                                    anxiety_level,
+                                                    style: TextStyle(
+                                                        fontSize: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.04),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    'Stress Level',
+                                                    style: TextStyle(
+                                                        fontSize: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.045,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  Text(
+                                                    stress_level,
+                                                    style: TextStyle(
+                                                        fontSize: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.04),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        actions: [
+                                          ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            NavigationPage(
+                                                              userId: '',
+                                                            )));
+                                              },
+                                              child: const Text('Cancel'))
+                                        ],
+                                      );
+                                    });
+                              });
+
+                              // String depression_level = data['depression_level'];
+                            },
+                            child: const Text('Submit'),
+                          )),
                     ],
                   ),
                 );

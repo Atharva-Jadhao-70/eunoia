@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eunoia/views/user/dashBoard/dashBoard.dart';
 import 'package:eunoia/views/user/dashBoard/navigationPage.dart';
+import 'package:eunoia/views/user/startTest/startTestScreen.dart';
+import 'package:eunoia/views/user/welcomPage/welcomePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -7,32 +10,87 @@ import '../../admin/adminLogin/adminLogin.dart';
 import '../../admin/dashBoard/adminDashBoard.dart';
 import '../signUpPage/signup.dart';
 
-class loginPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => loginPageState();
+  State<StatefulWidget> createState() => LoginPageState();
 }
 
-class loginPageState extends State<loginPage> {
+class LoginPageState extends State<LoginPage> {
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   var userName = TextEditingController();
   var passWord = TextEditingController();
 
+  static String? userId;
+
+  bool isLoggingIn = false;
+
+  bool passwordVisiblity = true;
+
   // Login Function
-  static Future<User?> loginUsingEmailAndPass(
+  Future<void> loginUsingEmailAndPass(
       {required String email,
       required String pass,
       required BuildContext context}) async {
+    setState(() {
+      isLoggingIn = true;
+    });
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
     try {
       UserCredential userCredential =
           await auth.signInWithEmailAndPassword(email: email, password: pass);
-      user = userCredential.user;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == "user-not-fount") {
-        print("No user Found");
+      userId = userCredential.user?.uid;
+
+      final DocumentSnapshot userSnapshot =
+          await firestore.collection('users').doc(userId).get();
+
+      final userData = userSnapshot.data() as Map<String, dynamic>;
+      if (userData['firstLogin']) {
+        final DocumentReference docRef = FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId);
+
+          // Update the specific field
+        docRef.update({
+          'firstLogin': false,
+        });
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => WelcomePage()),
+            (route) => false);
+      } else {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => NavigationPage(
+                      userId: userId!,
+                    )),
+            (route) => false);
       }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Login Error'),
+            content: Text(e.toString()),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } finally {
+      setState(() {
+        isLoggingIn = false;
+      });
     }
-    return user;
   }
 
   @override
@@ -69,15 +127,16 @@ class loginPageState extends State<loginPage> {
                       width: 250,
                       child: TextField(
                         controller: userName,
+                        keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          hintText: 'Username or Email',
+                          hintText: 'Email',
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.green),
+                            borderSide: const BorderSide(color: Colors.green),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.black),
+                            borderSide: const BorderSide(color: Colors.black),
                           ),
                         ),
                       ),
@@ -91,15 +150,28 @@ class loginPageState extends State<loginPage> {
                       width: 250,
                       child: TextField(
                         controller: passWord,
+                        obscureText: passwordVisiblity,
                         decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              Icons.remove_red_eye,
+                              color:
+                                  passwordVisiblity ? Colors.grey : Colors.blue,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                passwordVisiblity = !passwordVisiblity;
+                              });
+                            },
+                          ),
                           hintText: 'Password',
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.green),
+                            borderSide: const BorderSide(color: Colors.green),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.black),
+                            borderSide: const BorderSide(color: Colors.black),
                           ),
                         ),
                       ),
@@ -115,22 +187,19 @@ class loginPageState extends State<loginPage> {
                         margin: const EdgeInsets.only(right: 16, left: 16),
                         child: ElevatedButton(
                           onPressed: () async {
-                            User? user = await loginUsingEmailAndPass(
-                                email: userName.text,
-                                pass: passWord.text,
-                                context: context);
-                            if (user != null) {
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => NavigationPage()),
-                                  (route) => false);
-                            }
-                            else{
-
-                            }
+                            isLoggingIn
+                                ? null
+                                : await loginUsingEmailAndPass(
+                                    email: userName.text,
+                                    pass: passWord.text,
+                                    context: context);
                           },
-                          child: const Text('Login'),
+                          child: isLoggingIn
+                              ? const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: CircularProgressIndicator(color: Colors.white,),
+                              ) // Show progress indicator
+                              : Text('Login'),
                         ),
                       ),
                       Container(
@@ -157,43 +226,6 @@ class loginPageState extends State<loginPage> {
                 ],
               ),
             ),
-      
-            //selectable button for
-            Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  margin:
-                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
-                  child: Row(
-                    children: [
-                      SelectableText(
-                        'Admin',
-                        style: const TextStyle(color: Colors.blue),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AdminLogin()));
-                        },
-                      ),
-                      const SizedBox(
-                        height: 1,
-                        width: 10,
-                      ),
-                      SelectableText(
-                        'Doctor',
-                        style: const TextStyle(color: Colors.blue),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AdminLogin()));
-                        },
-                      ),
-                    ],
-                  ),
-                ))
           ],
         ),
       ),
