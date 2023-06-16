@@ -51,6 +51,8 @@ class StartTestScreenState extends State<StartTestScreen> {
   String anxiety_level = '';
   String stress_level = '';
 
+  bool isSubmitted = false;
+
   @override
   void initState() {
     super.initState();
@@ -58,22 +60,33 @@ class StartTestScreenState extends State<StartTestScreen> {
   }
 
   Future<dynamic> getPrediction(String input_values) async {
-    var data = await http.get(Uri.parse(
-        'https://atharva70.pythonanywhere.com/predictAll?input_values=$input_values'));
-    // print(jsonDecode(data.body));
-    var body = jsonDecode(data.body);
-    setState(() {
-      depression_level = body['depression_level'];
-      anxiety_level = body['anxiety_level'];
-      stress_level = body['stress_level'];
-    });
+    try {
+      setState(() {
+        isSubmitted = true;
+      });
+      var data = await http.get(Uri.parse(
+          'https://atharva70.pythonanywhere.com/predictAll?input_values=$input_values'));
+      // print(jsonDecode(data.body));
+      var body = jsonDecode(data.body);
+      setState(() {
+        depression_level = body['depression_level'];
+        anxiety_level = body['anxiety_level'];
+        stress_level = body['stress_level'];
+      });
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        isSubmitted = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Questions'),
+        title: const Text('Questions'),
       ),
       body: Column(
         children: [
@@ -96,7 +109,7 @@ class StartTestScreenState extends State<StartTestScreen> {
                       //options
                       Column(children: [
                         RadioListTile(
-                          title: Text('Never'),
+                          title: const Text('Never'),
                           value: 0,
                           groupValue: selectedValue[index],
                           onChanged: (value) {
@@ -106,7 +119,7 @@ class StartTestScreenState extends State<StartTestScreen> {
                           },
                         ),
                         RadioListTile(
-                          title: Text('Sometimes'),
+                          title: const Text('Sometimes'),
                           value: 1,
                           groupValue: selectedValue[index],
                           onChanged: (value) {
@@ -116,7 +129,7 @@ class StartTestScreenState extends State<StartTestScreen> {
                           },
                         ),
                         RadioListTile(
-                          title: Text('Often'),
+                          title: const Text('Often'),
                           value: 2,
                           groupValue: selectedValue[index],
                           onChanged: (value) {
@@ -126,7 +139,7 @@ class StartTestScreenState extends State<StartTestScreen> {
                           },
                         ),
                         RadioListTile(
-                          title: Text('Almost Always'),
+                          title: const Text('Almost Always'),
                           value: 3,
                           groupValue: selectedValue[index],
                           onChanged: (value) {
@@ -268,7 +281,12 @@ class StartTestScreenState extends State<StartTestScreen> {
 
                               // String depression_level = data['depression_level'];
                             },
-                            child: const Text('Submit'),
+                            child: isSubmitted
+                                ? const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : const Text('Submit'),
                           )),
                     ],
                   ),
@@ -287,7 +305,7 @@ class StartTestScreenState extends State<StartTestScreen> {
               return Container(
                 width: 8.0,
                 height: 8.0,
-                margin: EdgeInsets.symmetric(horizontal: 4.0),
+                margin: const EdgeInsets.symmetric(horizontal: 4.0),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: currentIndex == index ? Colors.blue : Colors.grey,

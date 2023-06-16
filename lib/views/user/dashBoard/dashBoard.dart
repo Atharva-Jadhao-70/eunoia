@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eunoia/views/user/musicRecommandation/musicRecommandation.dart';
 import 'package:eunoia/views/user/profilePage/profilePage.dart';
-import 'package:eunoia/utils/movieRecommandation.dart';
 import 'package:flutter/material.dart';
 import 'package:eunoia/views/user/userLogin/login.dart';
 
-import '../../../utils/trackModel.dart';
+import '../../../utils/movieRecommandation.dart';
+import '../movieRecommandation/movieRecommandation.dart';
+
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -19,8 +20,8 @@ class DashboardScreenState extends State<DashboardScreen> {
 
   static String? userFullName;
   static String? userEmail;
-  static String? userPhonerNumber = '9988756237';
-  static String? userDOB = '28 Feb 2023';
+  static String? userPhonerNumber;
+  static String? userDOB;
   static String? userDepressionLevel;
   static String? userAnxietyLevel;
   static String? userStressLevel;
@@ -28,7 +29,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   bool loadingData = true;
 
   Future<void> getRecommandedMovies() async {
-    var data = await MovieRecommandation.getDepressionMovies();
+    var data = await MovieRecommandationAPI.getDepressionMovies();
     if (data != null) {
       setState(() {
         recommendedMovies = data;
@@ -60,6 +61,8 @@ class DashboardScreenState extends State<DashboardScreen> {
       userDepressionLevel = userData['userDepressionLevel'];
       userAnxietyLevel = userData['userAnxietyLevel'];
       userStressLevel = userData['userStressLevel'];
+      userDOB = userData['userDateOfBirth'].toString();
+      userPhonerNumber = userData['userPhoneNumber'];
     });
   }
 
@@ -69,8 +72,6 @@ class DashboardScreenState extends State<DashboardScreen> {
     getRecommandedMovies();
     fetchUserData();
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -211,122 +212,159 @@ class DashboardScreenState extends State<DashboardScreen> {
           Container(
               // height: 200,
               child: Row(
-                children: [
-                  Expanded(
-                    child: Card(
-                      child: InkWell(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => MusicRecommandation(query: 'depression')));
-                        },
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          margin: const EdgeInsets.all(8),
-                          child: const Center(child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text('Music for depression', style: TextStyle(fontWeight: FontWeight.bold),),
-                          )),
+            children: [
+              Expanded(
+                child: Card(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  MusicRecommandation(query: 'depression')));
+                    },
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      margin: const EdgeInsets.all(8),
+                      child: const Center(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Music for depression',
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                      ),
+                      )),
                     ),
                   ),
-                  Expanded(
-                    child: Card(
-                      child: InkWell(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => MusicRecommandation(query: 'anxiety')));
-                        },
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          margin: const EdgeInsets.all(8),
-                          child: const Center(child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text('Music for anxiety',style: TextStyle(fontWeight: FontWeight.bold),),
-                          )),
+                ),
+              ),
+              Expanded(
+                child: Card(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  MusicRecommandation(query: 'anxiety')));
+                    },
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      margin: const EdgeInsets.all(8),
+                      child: const Center(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Music for anxiety',
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                      ),
+                      )),
                     ),
                   ),
-                  Expanded(
-                    child: Card(
-                      child: InkWell(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => MusicRecommandation(query: 'stress')));
-                        },
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          margin: const EdgeInsets.all(8),
-                          child: const Center(child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text('Music for stress', style: TextStyle(fontWeight: FontWeight.bold),),
-                          )),
+                ),
+              ),
+              Expanded(
+                child: Card(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  MusicRecommandation(query: 'stress')));
+                    },
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      margin: const EdgeInsets.all(8),
+                      child: const Center(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Music for stress',
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                      ),
+                      )),
                     ),
                   ),
-                ],
-              )),
+                ),
+              ),
+            ],
+          )),
 
           //container for movie recommandation
-          const Padding(
-            padding: EdgeInsets.all(5),
-            child: Text(
-              'Movies Recommandation',
-              style: TextStyle(fontWeight: FontWeight.bold),
+          InkWell(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MovieRecommandation()));
+            },
+            child: Card(
+              margin: const EdgeInsets.all(10),
+              child: Padding(
+                padding: const EdgeInsets.all(25),
+                child: Center(child: Text('Movie Recommandation', style: TextStyle(fontWeight: FontWeight.bold,fontSize: MediaQuery.of(context).size.width * 0.05),)),
+              ),
             ),
           ),
-          Container(
-            child: loadingData
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 4.0,
-                    ),
-                  )
-                : SingleChildScrollView(
-                    child: Row(children: [
-                      //card - 1
-                      Card(
-                        child: Column(
-                          children: [
-                            //Display poster image
-                            Container(
-                              width: 100,
-                              height: 100,
-                              child: Image.network(
-                                'https://image.tmdb.org/t/p/w500${recommendedMovies[1]['poster_path']}',
-                              ),
-                            ),
-                            Text(
-                              recommendedMovies[1]['title'],
-                              textAlign: TextAlign.center,
-                            )
-                          ],
-                        ),
-                      ),
-                      //Card - 2
-                      Card(
-                        child: Column(
-                          children: [
-                            //Display poster image
-                            Container(
-                              width: 100,
-                              height: 100,
-                              child: Image.network(
-                                'https://image.tmdb.org/t/p/w500${recommendedMovies[2]['poster_path']}',
-                              ),
-                            ),
-                            Text(
-                              recommendedMovies[2]['title'],
-                              textAlign: TextAlign.center,
-                            )
-                          ],
-                        ),
-                      ),
-                    ]),
-                  ),
-          ),
+
+          // const Padding(
+          //   padding: EdgeInsets.all(5),
+          //   child: Text(
+          //     'Movies Recommandation',
+          //     style: TextStyle(fontWeight: FontWeight.bold),
+          //   ),
+          // ),
+          // Container(
+          //   child: loadingData
+          //       ? const Center(
+          //           child: CircularProgressIndicator(
+          //             strokeWidth: 4.0,
+          //           ),
+          //         )
+          //       : SingleChildScrollView(
+          //           child: Row(children: [
+          //             //card - 1
+          //             Card(
+          //               child: Column(
+          //                 children: [
+          //                   //Display poster image
+          //                   Container(
+          //                     width: 100,
+          //                     height: 100,
+          //                     child: Image.network(
+          //                       'https://image.tmdb.org/t/p/w500${recommendedMovies[1]['poster_path']}',
+          //                     ),
+          //                   ),
+          //                   Text(
+          //                     recommendedMovies[1]['title'],
+          //                     textAlign: TextAlign.center,
+          //                   )
+          //                 ],
+          //               ),
+          //             ),
+          //             //Card - 2
+          //             Card(
+          //               child: Column(
+          //                 children: [
+          //                   //Display poster image
+          //                   Container(
+          //                     width: 100,
+          //                     height: 100,
+          //                     child: Image.network(
+          //                       'https://image.tmdb.org/t/p/w500${recommendedMovies[2]['poster_path']}',
+          //                     ),
+          //                   ),
+          //                   Text(
+          //                     recommendedMovies[2]['title'],
+          //                     textAlign: TextAlign.center,
+          //                   )
+          //                 ],
+          //               ),
+          //             ),
+          //           ]),
+          //         ),
+          // ),
         ],
       ),
     );

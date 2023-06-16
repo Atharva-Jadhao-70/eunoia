@@ -22,8 +22,13 @@ class signUpPageState extends State<signUpPage> {
 
   final formKey = GlobalKey<FormState>();
 
+  bool isSignedUp = false;
+
   void signup() async {
     try {
+      setState(() {
+        isSignedUp = true;
+      });
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(
         email: email.text,
         password: passWord.text,
@@ -36,7 +41,7 @@ class signUpPageState extends State<signUpPage> {
         'userName': name.text,
         'userEmail': email.text,
         'userPhoneNumber': phone.text,
-        'userDateOfBirth': selectedDate,
+        'userDateOfBirth': selectedDate.toString(),
         'userTestAttempts': 0,
         'depression_level': null,
         'anxiety_level': null,
@@ -88,6 +93,10 @@ class signUpPageState extends State<signUpPage> {
           );
         },
       );
+    } finally {
+      setState(() {
+        isSignedUp = false;
+      });
     }
   }
 
@@ -305,7 +314,12 @@ class signUpPageState extends State<signUpPage> {
                       signup();
                     }
                   },
-                  child: const Text('Sign Up'),
+                  child: isSignedUp
+                      ? const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: CircularProgressIndicator(color: Colors.white,),
+                              ) 
+                      : Text('Sign Up'),
                 ),
               ],
             ),

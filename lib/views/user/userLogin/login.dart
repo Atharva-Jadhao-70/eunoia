@@ -219,10 +219,10 @@ class LoginPageState extends State<LoginPage> {
                   const SizedBox(
                     height: 10,
                   ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Text('Forget Password'),
-                  ),
+                  // ElevatedButton(
+                  //   onPressed: () {},
+                  //   child: const Text('Forget Password'),
+                  // ),
                 ],
               ),
             ),

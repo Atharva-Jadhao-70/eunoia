@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class MovieRecommandation {
+class MovieRecommandationAPI {
   static Future<List<dynamic>> getDepressionMovies() async {
     final apiKey = '83694bc97ca533d778a18a44a5776c01';
     final query = 'depression';

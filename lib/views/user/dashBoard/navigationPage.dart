@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../startTest/startTestScreen.dart';
 import 'dashBoard.dart';
@@ -15,6 +16,16 @@ class NavigationPage extends StatefulWidget {
 class NavigationPageState extends State<NavigationPage> {
   int _currentIndex = 0;
   String? userId;
+  
+  void openWhatsApp(String phoneNumber) async {
+  String url = "whatsapp://send?phone=$phoneNumber";
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
 
   @override
   void initState(){
@@ -26,12 +37,13 @@ class NavigationPageState extends State<NavigationPage> {
     // Add your screens here
     DashboardScreen(),
     StartTestScreen(),
-    Container(),
+    // Container(),
   ];
 
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
+
     });
   }
 
@@ -51,10 +63,10 @@ class NavigationPageState extends State<NavigationPage> {
             icon: Icon(Icons.quiz_outlined),
             label: 'Start Test',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Chat',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.chat),
+          //   label: 'Chat',
+          // ),
         ],
       ),
     );

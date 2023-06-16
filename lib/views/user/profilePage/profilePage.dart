@@ -1,4 +1,6 @@
 import 'package:eunoia/views/user/dashBoard/dashBoard.dart';
+import 'package:eunoia/views/user/userLogin/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -7,6 +9,13 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilePageState extends State<ProfilePage> {
+  FirebaseAuth auth = FirebaseAuth.instance;
+
+  void signOutUser() async {
+    await auth.signOut();
+    // You can perform any additional actions after signing out, such as navigating to a login screen.
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,6 +26,23 @@ class ProfilePageState extends State<ProfilePage> {
             icon: Icon(Icons.logout),
             onPressed: () {
               // Handle logout functionality
+              showDialog(context: context, builder: (BuildContext context){
+                return AlertDialog(
+                  content: const Text('Do you really want to logout?'),
+                  actions: [
+                    ElevatedButton(onPressed: (){
+                      signOutUser();
+                      Navigator.of(context).pop();
+                      Navigator.popUntil(context, (route) => route.isFirst);
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LoginPage()));
+                    }, child: const Text('Yes')),
+                    ElevatedButton(onPressed: (){
+                      Navigator.of(context).pop();
+                    }, child: const Text('No')),
+                  ],
+                );
+              });
+              signOutUser();
             },
           ),
         ],
@@ -128,7 +154,7 @@ class ProfilePageState extends State<ProfilePage> {
                   child: Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: Text(
-                      '9786562672',
+                      '${DashboardScreenState.userPhonerNumber}',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: MediaQuery.of(context).size.width * 0.045),
@@ -139,32 +165,32 @@ class ProfilePageState extends State<ProfilePage> {
             ),
           ),
 
-          SizedBox(height: 10.0),
+          // SizedBox(height: 10.0),
 
-          //Date of birth
-          Container(
-            child: Column(
-              children: [
-                const Text(
-                  'Date of birth',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Card(
-                  elevation: 5,
-                  color: Colors.grey.shade300,
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Text(
-                      '29 Feb 2001',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: MediaQuery.of(context).size.width * 0.045),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // //Date of birth
+          // Container(
+          //   child: Column(
+          //     children: [
+          //       const Text(
+          //         'Date of birth',
+          //         style: TextStyle(fontWeight: FontWeight.bold),
+          //       ),
+          //       Card(
+          //         elevation: 5,
+          //         color: Colors.grey.shade300,
+          //         child: Padding(
+          //           padding: const EdgeInsets.all(5.0),
+          //           child: Text(
+          //             '${DashboardScreenState.userDOB}',
+          //             style: TextStyle(
+          //                 fontWeight: FontWeight.bold,
+          //                 fontSize: MediaQuery.of(context).size.width * 0.045),
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
 
           SizedBox(height: 16.0),
 
@@ -181,12 +207,15 @@ class ProfilePageState extends State<ProfilePage> {
                   children: [
                     Text(
                       'Depression Level',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.05),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: MediaQuery.of(context).size.width * 0.05),
                     ),
                     SizedBox(height: 6.0),
                     Text(
                       '${DashboardScreenState.userDepressionLevel}',
-                      style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.045),
+                      style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.045),
                     ),
                   ],
                 ),
@@ -210,12 +239,17 @@ class ProfilePageState extends State<ProfilePage> {
                         children: [
                           Text(
                             'Anxiety Level',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.05),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.05),
                           ),
                           SizedBox(height: 6.0),
                           Text(
                             '${DashboardScreenState.userAnxietyLevel}',
-                            style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.045),
+                            style: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.045),
                           ),
                         ],
                       ),
@@ -238,12 +272,17 @@ class ProfilePageState extends State<ProfilePage> {
                         children: [
                           Text(
                             'Stress Level',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.05),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.05),
                           ),
                           SizedBox(height: 6.0),
                           Text(
                             '${DashboardScreenState.userStressLevel}',
-                            style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.045),
+                            style: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.045),
                           ),
                         ],
                       ),
